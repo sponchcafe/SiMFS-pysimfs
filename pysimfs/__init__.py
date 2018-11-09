@@ -27,5 +27,9 @@ from . component import *
 from . presets import *
 from . import mocks
 
-ip = get_ipython()
-ip.register_magics(SimfsDefaultMagics)
+try:
+    ip = get_ipython()
+    ip.register_magics(SimfsDefaultMagics)
+except NameError:
+    pass # ipython not found
+
