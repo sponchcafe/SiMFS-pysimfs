@@ -13,9 +13,10 @@ class SimfsDefaultMagics(Magics):
             'dif': os.path.join('mol', 'simfs_dif'),
             'cnf': os.path.join('mol', 'simfs_cnf'),
             'sft': os.path.join('mol', 'simfs_sft'),
-            'fcs': os.path.join('fcs', 'simfs_fcs'),
+            'exi': os.path.join('fcs', 'simfs_exi'),
+            'det': os.path.join('fcs', 'simfs_det'),
             'pls': os.path.join('fcs', 'simfs_pls'),
-            'efi': os.path.join('fcs', 'simfs_efi'),
+            'pre': os.path.join('fcs', 'simfs_pre'),
             'ph2': os.path.join('ph2', 'simfs_ph2'),
             'spl': os.path.join('utl', 'simfs_spl'),
             'mix': os.path.join('utl', 'simfs_mix'),
@@ -30,10 +31,10 @@ class SimfsDefaultMagics(Magics):
         call = os.path.join(basepath, SimfsDefaultMagics.shortcuts[line])
 
         params = Simulation.call_simfs(call, 'list')[0]
-        params = f'{line.split("/")[-1]}_params = '
-        params += json.dumps(params, indent=4).replace('"', "'")
+        cell_content = f'{line.split("/")[-1]}_params = '
+        cell_content+= json.dumps(params, indent=4).replace('"', "'")
 
         self.shell.set_next_input(
-                f'# %simfs_default {line}\n{params}', 
+                f'# %simfs_default {line}\n{cell_content}', 
                 replace=True
                 )

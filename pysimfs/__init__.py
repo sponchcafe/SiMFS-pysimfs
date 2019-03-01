@@ -1,18 +1,27 @@
-import numpy as np
-import os
-from collections import namedtuple
+#! /usr/bin/env python
 
-here = os.path.dirname(__file__)
-basepath = os.path.abspath(os.path.join(here, '/opt/SiMFS-Tk/build/src/components')) # SiMFS-Tk installation path
+from collections import namedtuple
+import os
+
+import numpy as np
+
+basepath = '/home/tizi/SiMFS-Tk/SiMFS-core/build/src/components/' # Make configurable
+
+def find_component(comp: str, directory: str) -> bool:
+    return os.path.exists(os.path.join(basepath, directory, comp)) 
+
 
 for comp in ['simfs_dif', 'simfs_sft', 'simfs_cnf']:
-    assert os.path.exists(os.path.join(basepath, f'mol/{comp}')), f'mol/{comp} not found in {basepath}'
-for comp in ['simfs_fcs', 'simfs_efi', 'simfs_pls']:
-    assert os.path.exists(os.path.join(basepath, f'fcs/{comp}')), f'fcs/{comp} not found in {basepath}'
+    assert find_component(comp, 'mol'), f'mol/{comp} not found in {basepath}'
+
+for comp in ['simfs_exi', 'simfs_det', 'simfs_pre', 'simfs_pls']:
+    assert find_component(comp, 'fcs'), f'fcs/{comp} not found in {basepath}'
+    
 for comp in ['simfs_ph2']:
-    assert os.path.exists(os.path.join(basepath, f'ph2/{comp}')), f'ph2/{comp} not found in {basepath}'
-for comp in ['simfs_buf', 'simfs_spl', 'simfs_mix']:
-    assert os.path.exists(os.path.join(basepath, f'utl/{comp}')), f'utl/{comp} not found in {basepath}'
+    assert find_component(comp, 'ph2'), f'ph2/{comp} not found in {basepath}'
+
+for comp in ['simfs_buf', 'simfs_spl', 'simfs_mix', 'simfs_img']:
+    assert find_component(comp, 'utl'), f'utl/{comp} not found in {basepath}'
 
 print(f'All simfs components found in {basepath}.')
 
@@ -26,6 +35,7 @@ timetag_t = np.dtype('f8')
 from . component import *
 from . presets import *
 from . import mocks
+from . import utils
 
 try:
     ip = get_ipython()

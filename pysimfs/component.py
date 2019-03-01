@@ -200,25 +200,31 @@ class Splitter(Component):
         IO('rejected_output', timetag_t)
     ]
 
-
 ###############################################################################
-class Focus(Component):
-    cmd = 'fcs/simfs_fcs'
+class Excitation(Component):
+    cmd = 'fcs/simfs_exi'
     input_paths=[
         IO('input', coordinate_t),
     ]
     output_paths=[
         IO('output', timed_value_t),
     ]
-                    
-    def __init__(self, name='', mode='exi', kind='alpha', **params):
-        assert mode in ['exi', 'det'], f'Mode "{mode}" not recognized - options: [exi|det]'
-        assert kind in ['gauss', 'alpha', 'efield'], f'Kind "{kind}" not recognized - options: [gauss|alpha|efield]'
-        self.mode = mode
-        self.kind = kind
-        self.opts = [mode, kind]
-        name = name+f'({mode}-{kind})'
-        super().__init__(name, **params)
+
+###############################################################################
+class Detection(Component):
+    cmd = 'fcs/simfs_det'
+    input_paths=[
+        IO('input', coordinate_t),
+    ]
+    output_paths=[
+        IO('output', timed_value_t),
+    ]
+
+###############################################################################
+class Precalculate(Component):
+    cmd = 'fcs/simfs_pre'
+    input_paths=[ ]
+    output_paths=[ ]
 
 
 ###############################################################################

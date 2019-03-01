@@ -15,17 +15,20 @@ from . import IO, ComponentLog
 class Simulation:
 
     ########################################################################### 
-    def __init__(self, name=None, tmpdir='./pysimfs_tmp'):
+    def __init__(self, name=None, tmpdir='./pysimfs_tmp', datadir='./pysimfs_data'):
         self.tmpdir = tmpdir
+        self.datadir = datadir
         self.matched = set()
         self.components = []
         self.unmatched_in = set()
         self.unmatched_out = set()
         self.open_pipes = set()
-        try:
-            os.mkdir(self.tmpdir)
-        except FileExistsError:
-            print(f'Temporary folder {self.tmpdir} exists.')
+
+        for d in (self.tmpdir, self.datadir):
+            try:
+                os.mkdir(d)
+            except FileExistsError:
+                print(f'Folder {d} exists.')
 
     ########################################################################### 
     def __enter__(self):
@@ -151,7 +154,8 @@ class Simulation:
             [cmd]+list(opts), 
             stdin=subprocess.PIPE, 
             stdout=subprocess.PIPE, 
-            stderr=subprocess.PIPE
+            stderr=subprocess.PIPE,
+            env=os.environ.copy()
         )
         out, err = proc.communicate(input=json.dumps(params).encode('utf8'))
         return json.loads(out.decode().strip()), err.decode().strip()
@@ -163,7 +167,8 @@ class Simulation:
             cmd, *opts, 
             stdin=asyncio.subprocess.PIPE, 
             stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE
+            stderr=asyncio.subprocess.PIPE,
+            env=os.environ.copy()
         )
         print(f"started {cmd}")
         out, err = await proc.communicate(input=json.dumps(params).encode('utf-8'))
