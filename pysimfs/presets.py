@@ -28,7 +28,16 @@ class SimfsDefaultMagics(Magics):
     @line_magic
     def simfs_default(self, line):
 
-        call = os.path.join(basepath, SimfsDefaultMagics.shortcuts[line])
+        args = line.split()
+        comp = args[0]
+        call = os.path.join(basepath, SimfsDefaultMagics.shortcuts[comp])
+
+        '''
+        params = dict(
+            (k.strip(), literal_eval(v.strip())) for (k, v) in 
+            map(lambda s: s.split('='), args[1:].split(','))
+        )
+        '''
 
         params = Simulation.call_simfs(call, 'list')[0]
         cell_content = f'{line.split("/")[-1]}_params = '

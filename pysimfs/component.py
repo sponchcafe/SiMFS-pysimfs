@@ -25,46 +25,61 @@ class Component:
         if name:
             self.name = ':'.join((name, self.name))
 
-        self.params = params
+        self.params= params
+        self._params = params
+        self.validate_params()
 
+    @property
+    def all_params(self):
+        return self._params
+
+
+    def validate_params(self):
+        '''Pass configured params to simfs-core component and get full params
+        back'''
         try:
-            out, err = Simulation.call_simfs(self.call, *self.opts, 'list', **self.params)
+            out, err = Simulation.call_simfs(
+                    self.call, 
+                    *self.opts, 
+                    'list', 
+                    **self.params
+                    )
             self.err = err
-            self.params = out
+            self._params = out
         except Exception as e:
             print('Error calling SiMFS.', self.call, e)
             return
 
-        def __repr__(self):
-            return f'{self.name}'
+    def __repr__(self):
+        return f'{self.name}'
 
     ########################################################################### 
     @property
     def inputs(self):
         inputs = set()
         for p in self.__class__.input_paths:
-            val = Component.get_dict_path(self.params, p.name.split('/'))
+            val = Component.get_dict_path(self._params, p.name.split('/'))
             inputs.update({IO(v, p.dtype) for v in val})
         return inputs
 
     ########################################################################### 
     def remap_inputs(self, mapping):
         for p in self.__class__.input_paths:
-            Component.set_dict_path(self.params, p.name.split('/'), mapping)
+            Component.set_dict_path(self._params, p.name.split('/'), mapping)
 
     ########################################################################### 
     @property
     def outputs(self):
         outputs = set()
         for p in self.__class__.output_paths:
-            val = Component.get_dict_path(self.params, p.name.split('/'))
+            val = Component.get_dict_path(self._params, p.name.split('/'))
             outputs.update({IO(v, p.dtype) for v in val})
         return outputs
 
     ########################################################################### 
     def remap_outputs(self, mapping):
         for p in self.__class__.output_paths:
-            Component.set_dict_path(self.params, p.name.split('/'), mapping)
+            Component.set_dict_path(self._params, p.name.split('/'), mapping)
 
    ########################################################################### 
     @staticmethod

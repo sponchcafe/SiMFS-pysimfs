@@ -5,7 +5,7 @@ import os
 
 import numpy as np
 
-basepath = '/home/tizi/SiMFS-Tk/SiMFS-core/build/src/components/' # Make configurable
+basepath = '/opt/SiMFS-Tk/SiMFS-core/build/src/components/' # Make configurable
 
 def find_component(comp: str, directory: str) -> bool:
     return os.path.exists(os.path.join(basepath, directory, comp)) 

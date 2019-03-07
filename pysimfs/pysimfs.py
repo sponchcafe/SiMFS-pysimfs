@@ -4,6 +4,7 @@ import asyncio
 import threading
 
 import os
+import copy
 import json
 import time
 import uuid
@@ -41,9 +42,12 @@ class Simulation:
     ########################################################################### 
     def add(self, comp):
 
-        self.components.append(comp)
-        new_in = comp.inputs
-        new_out = comp.outputs
+        _comp = copy.deepcopy(comp)
+        _comp.validate_params()
+        self.components.append(_comp)
+
+        new_in = _comp.inputs
+        new_out = _comp.outputs
                                             
         self.unmatched_in.update(new_in)
         self.unmatched_out.update(new_out)
@@ -88,11 +92,12 @@ class Simulation:
         asyncio.get_child_watcher().attach_loop(loop) # register loop (?)
         
         commands = asyncio.gather(
-                *(Simulation.call_simfs_async(c.call, *c.opts, **c.params) for c in self.components), loop=loop
+                *(Simulation.call_simfs_async(c.call, *c.opts, **c._params) for c in self.components), loop=loop
         )                  
         
         #Run the commands
         start = time.time()
+        print(f'Started simulation with {len(self.components)} component processes.')
         t = threading.Thread(target=self.run_loop, args=(loop, commands))
         t.start()
         t.join()
@@ -155,7 +160,6 @@ class Simulation:
             stdin=subprocess.PIPE, 
             stdout=subprocess.PIPE, 
             stderr=subprocess.PIPE,
-            env=os.environ.copy()
         )
         out, err = proc.communicate(input=json.dumps(params).encode('utf8'))
         return json.loads(out.decode().strip()), err.decode().strip()
@@ -168,8 +172,6 @@ class Simulation:
             stdin=asyncio.subprocess.PIPE, 
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
-            env=os.environ.copy()
         )
-        print(f"started {cmd}")
         out, err = await proc.communicate(input=json.dumps(params).encode('utf-8'))
         return json.loads(out.decode().strip()), err.decode().strip()
