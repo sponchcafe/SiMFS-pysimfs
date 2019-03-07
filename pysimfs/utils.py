@@ -64,3 +64,22 @@ class GridData():
         if index < 0:
             return 0
         return index
+
+
+class PrecalculatedGridData(GridData):
+
+    NORM_SIZE = 2*8
+    HEADER_SIZE = 11*8
+
+    def __init__(self, filename, dtype='f8'):
+        self.filename = filename
+        self.dtype = dtype
+        self._load()
+        self.data = self._raw[PrecalculatedGridData.HEADER_SIZE:].view(self.dtype)
+        self.data = self.data.reshape(*(d.n for d in self.shape))
+
+    @property
+    def shape(self):
+        linspaces = self._raw[PrecalculatedGridData.NORM_SIZE:PrecalculatedGridData.NORM_SIZE+GridData.HEADER_SIZE].view(GridData.LinSpace_t)
+        return GridData.GridSpace(*(GridData.LinSpace(*d) for d in linspaces))
+
