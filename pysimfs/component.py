@@ -2,7 +2,7 @@
 ###############################################################################
 ###############################################################################
 
-from . import IO, coordinate_t, timed_value_t, timetag_t, basepath
+from . import IO, coordinate_t, timed_value_t, timetag_t, cmp_dir
 from . pysimfs import Simulation 
 
 import json
@@ -19,7 +19,7 @@ class Component:
     ########################################################################### 
     def __init__(self, name=None, **params):
 
-        self.call = os.path.join(basepath, self.cmd)
+        self.call = os.path.join(cmp_dir, self.cmd)
         self.name = f'{self.cmd}:{str(uuid.uuid1())[:8]}'
 
         if name:

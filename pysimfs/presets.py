@@ -1,7 +1,7 @@
 from IPython.core.magic import Magics, magics_class, line_magic
 import json
 from pysimfs import Simulation, Component
-from . import basepath
+from . import cmp_dir
 import os
 
 ###############################################################################
@@ -30,7 +30,7 @@ class SimfsDefaultMagics(Magics):
 
         args = line.split()
         comp = args[0]
-        call = os.path.join(basepath, SimfsDefaultMagics.shortcuts[comp])
+        call = os.path.join(cmp_dir, SimfsDefaultMagics.shortcuts[comp])
 
         '''
         params = dict(

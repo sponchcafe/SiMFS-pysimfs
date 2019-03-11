@@ -7,10 +7,11 @@ setuptools.setup(
         description="Python driver for SiMFS-Tk",
         url="https://github.com/sponchcafe/SiMFS-Tk",
         packages=setuptools.find_packages(),
+        include_package_data=True,
         classifiers=[
             "Programming Language :: Python :: 3",
             "License :: GPL v3",
-            "Operating System :: OS Independent",
+            "Operating System :: Linux",
             ],
         )
 

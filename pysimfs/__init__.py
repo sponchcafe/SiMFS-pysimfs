@@ -2,28 +2,30 @@
 
 from collections import namedtuple
 import os
+import platform
 
 import numpy as np
 
-basepath = '/opt/SiMFS-Tk/SiMFS-core/build/src/components/' # Make configurable
+pkg_dir = os.path.dirname(os.path.abspath(__file__))
 
-def find_component(comp: str, directory: str) -> bool:
-    return os.path.exists(os.path.join(basepath, directory, comp)) 
+cmp_dir = os.path.join(pkg_dir, 'components', platform.system().lower())
 
+def find_component(comp, directory):
+    return os.path.exists(os.path.join(cmp_dir, directory, comp)) 
 
 for comp in ['simfs_dif', 'simfs_sft', 'simfs_cnf']:
-    assert find_component(comp, 'mol'), f'mol/{comp} not found in {basepath}'
+    assert find_component(comp, 'mol'), f'mol/{comp} not found in {cmp_dir}'
 
 for comp in ['simfs_exi', 'simfs_det', 'simfs_pre', 'simfs_pls']:
-    assert find_component(comp, 'fcs'), f'fcs/{comp} not found in {basepath}'
+    assert find_component(comp, 'fcs'), f'fcs/{comp} not found in {cmp_dir}'
     
 for comp in ['simfs_ph2']:
-    assert find_component(comp, 'ph2'), f'ph2/{comp} not found in {basepath}'
+    assert find_component(comp, 'ph2'), f'ph2/{comp} not found in {cmp_dir}'
 
 for comp in ['simfs_buf', 'simfs_spl', 'simfs_mix', 'simfs_img']:
-    assert find_component(comp, 'utl'), f'utl/{comp} not found in {basepath}'
+    assert find_component(comp, 'utl'), f'utl/{comp} not found in {cmp_dir}'
 
-print(f'All simfs components found in {basepath}.')
+print(f'All simfs components found in {cmp_dir}.')
 
 IO = namedtuple('IO', ['name', 'dtype'])
 ComponentLog = namedtuple('ComponentLog', ['params', 'error'])
