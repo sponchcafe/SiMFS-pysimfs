@@ -35,6 +35,8 @@ timed_value_t = np.dtype([('v', 'f8'), ('t', 'f8')])
 timetag_t = np.dtype('f8')
 
 from . component import *
+from . import pipe
+
 from . presets import *
 from . import mocks
 from . import utils
